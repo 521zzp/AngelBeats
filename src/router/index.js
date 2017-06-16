@@ -13,6 +13,11 @@ const AppDownload = resolve => {
     resolve(require('@/components/page/AppDownload.vue'))
   })
 }
+const Form = resolve => {
+  require.ensure(['@/components/page/Form.vue'], () => {
+    resolve(require('@/components/page/Form.vue'))
+  })
+}
 
 
 
@@ -28,13 +33,17 @@ export default new Router({
     },
     {
       path: '/regist/:invitor',
-      name: 'Regist',
       component: Regist
     },
     {
       path: '/app',
       name: 'appDownload',
       component: AppDownload
+    },
+    {
+      path: '/form',
+      name: 'Form',
+      component: Form
     },
     
   ]

@@ -1,5 +1,5 @@
 <template>
-	<div class="clearfix download-page">
+	<div class="clearfix download-page" :style="fullScreenStyle">
 		<img class="logo" src="../../assets/icon/spa-logo.png"/>
 		<div class="download-group">
 			<a href="http://139.196.104.97/static_img/app/yhb-release.apk" class="android download-item">
@@ -19,12 +19,14 @@
 </template>
 
 <script>
+import {fullScreenStyle} from '@/config/style'
+
 export default {
 	data () {
 		return {
-			
+			fullScreenStyle: fullScreenStyle,
 		}
-	}
+	},
 }
 
 </script>
@@ -33,7 +35,7 @@ export default {
 @import url("../../config/base.less");
 
 .download-icon{
-	font-size: .5rem;
+	font-size: .6rem;
 }
 .download-group{
 	margin-top: 1.5rem;
@@ -41,9 +43,9 @@ export default {
 .download-item{
 	display: block;
 	width: 70%;
-	height: 1rem;
-	line-height: 1rem;
-	font-size: .34rem;
+	height: 1.3rem;
+	line-height: 1.3rem;
+	font-size: 0.48rem;
 	margin: .5rem auto;
 	text-align: center;
 	color: #FFFFFF;
@@ -55,8 +57,8 @@ export default {
 	display: block;
 	margin-left: auto;
 	margin-right: auto;
-	margin-top: 2rem;
-	width: 2.3rem;
+	margin-top: 4rem;
+	width: 3.066666rem;
 }
 .download-page{
 	width: 100%;

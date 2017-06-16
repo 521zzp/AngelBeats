@@ -11,6 +11,7 @@
   },
   "dependencies": {
     "babel-polyfill": "^6.23.0",
+    "iview": "^2.0.0-rc.17",
     "muse-ui": "^2.0.3",
     "vue": "^2.3.3",
     "vue-router": "^2.3.1",

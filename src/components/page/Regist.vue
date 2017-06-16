@@ -158,14 +158,12 @@ export default {
 			}
 		},
 		pwdOpenChange () {
-			console.log(14)
 			this.pwdOpen = !this.pwdOpen
 			this.pwpType = this.pwdOpen ? 'text' : 'password'
 		}
 	},
 	mounted () {
 		let invitor = this.$route.params.invitor
-		console.log(invitor)
 		if (!!invitor) {
 			this.form.invitor.value = invitor
 			this.form.invitor.valid = true

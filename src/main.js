@@ -10,6 +10,7 @@ import '@/config/theme.less'
 import '@/config/icon/iconfont.js'
 import '@/tool/flexible.js'
 
+
 Vue.use(MuseUI)
 Vue.config.productionTip = false
 

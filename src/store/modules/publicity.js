@@ -90,7 +90,6 @@ const mutations = {
 		state.navOpen = obj
     },
     [types.PUB_NEWS_DETAILS] (state,obj) {
-    	console.log(obj.next)
 		state.newsDetails = obj
     },
     [types.PUB_NEWS_TOTAL] (state,obj) {

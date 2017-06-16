@@ -129,12 +129,12 @@ export default {
 		}
 	},
 	mounted () {
-		setTimeout(function () {
+		/*setTimeout(function () {
 			let onOk = function () {
 				confirmDialog('骗子', '这样说违心的话真的好吗？', () => feedback('ok', '那你很棒棒哦！'), ()=>feedback('error','相信明天更美好'))
 			}
 			simpleDialog('调查', '你有好好对待每一天吗?', onOk)
-		},2000)
+		},2000)*/
 	}
 }
 </script>
