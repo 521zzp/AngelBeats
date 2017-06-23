@@ -16,9 +16,9 @@
 </template>
 
 <script>
-import {checkNotNull, checkPhone, checkIdcard} from '@/tool/regx'
-import {validate, resultMerge} from '@/tool/form'
+import {checkNotNull, checkPhone, checkIdcard, validate, resultMerge} from '@/tool/regx'
 import {notice} from '@/tool/talk'
+
 
 const test = async function (value) {
 	let result = await new Promise((resolve) => {
@@ -58,7 +58,6 @@ export default {
 				phone: [
 					{ check: checkNotNull, message: '电话号码不能为空' },
 					{ check: checkPhone, message: '电话号码格式不正确' },
-					{ check: test, message: '异步结果不匹配' },
 				],
 				idCard: [
 					{ check: checkNotNull, message: '身份证号不能为空' },

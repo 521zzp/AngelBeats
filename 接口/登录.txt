@@ -1,0 +1,41 @@
+
+1.新手礼包接口
+get 方法
+返回：
+[
+	{
+		value: '5000',
+		type: '元体验金'
+	},
+	...
+]
+
+2.发送手机号到后台，发送验证码接口
+post 方法
+发送
+{
+	phone: '15773270836'
+}
+
+返回
+{
+	result: true/false,
+	msg: ''
+}
+
+
+3.注册
+post 方法
+发送
+{
+	phone: '',
+	code: '', //验证码
+	password: '', //密码
+	invitor: '' //邀请人
+}
+
+返回
+{
+	result: true/false,
+	msg: ''
+}

@@ -38,7 +38,7 @@ export default {
 	font-size: .6rem;
 }
 .download-group{
-	margin-top: 1.5rem;
+	margin-top: 2.5rem;
 }
 .download-item{
 	display: block;
@@ -57,7 +57,7 @@ export default {
 	display: block;
 	margin-left: auto;
 	margin-right: auto;
-	margin-top: 4rem;
+	margin-top: 2rem;
 	width: 3.066666rem;
 }
 .download-page{

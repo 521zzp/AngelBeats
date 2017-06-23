@@ -1,42 +1,56 @@
 <template>
 	<div class="clearfix regist-page" :style="fullHeightStyle">
 		<img :class="{hidden: logoHidden}" class="logo" src="../../assets/icon/spa-logo.png"/>
-		<span class="gift">注册即送<span class="value">8888</span>元体验金</span>
+		<span class="gift" v-for="item in gifts">注册即送<span class="value">{{item.value}}</span>{{item.type}}</span>
 		<div v-if="step === 1" class="regist-form form-one">
-			<mu-text-field hintText="手机号码" v-model="form.phone.value" :maxLength="11" @input="phoneChange" class="regist-item" :errorText="form.phone.errorText"  />
+			<mu-text-field hintText="手机号码" v-model="form.phone.value" type="number" :maxLength="11" @input="vali(form, rules, 'phone')" class="regist-item"
+				 inputClass="regist-item-input" hintTextClass="regist-item-tips" :errorText="form.phone.errorText"  />
 		</div>
 		<div v-if="step === 2" class="regist-form form-two">
 				<div class="rigist-item-wrap">
-					<mu-text-field hintText="验证码" v-model="form.valiCode.value" class="regist-item" :errorText="form.valiCode.errorText"  />
-					<span class="send-valid">52s后重新发送</span>
+					<mu-text-field hintText="验证码" v-model="form.valiCode.value" type="number" class="regist-item"
+						hintTextClass="regist-item-tips" inputClass="regist-item-input" :errorText="form.valiCode.errorText"  />
+					<span class="send-valid" @click="next">{{text}}</span>
 				</div>
 				<div class="rigist-item-wrap">
-					<mu-text-field hintText="密码" :type="pwpType" v-model="form.password.value" class="regist-item" :errorText="form.password.errorText"  />
+					<mu-text-field hintText="密码" :type="pwpType" v-model="form.password.value" class="regist-item"
+						hintTextClass="regist-item-tips" inputClass="regist-item-input" :errorText="form.password.errorText"  />
 					<div class="eye" :class="{'eye-open': pwdOpen}" @click="pwdOpenChange"></div>
 				</div>
 				<div class="rigist-item-wrap" :class="{hidden: invitorHide}">
-					<mu-text-field v-if="invitorOpen" hintText="推荐人" v-model="form.invitor.value" class="regist-item" :errorText="form.invitor.errorText"  />
+					<mu-text-field v-if="invitorOpen" hintText="推荐人" type="number" v-model="form.invitor.value" class="regist-item" 
+						hintTextClass="regist-item-tips" inputClass="regist-item-input":errorText="form.invitor.errorText"  />
 					<svg class="iconfont invitor-arrow" :class="{open: invitorOpen}" aria-hidden="true" @click="invitorOpen = !invitorOpen">
 					    <use xlink:href="#icon-back"></use>
 					</svg>
 				</div>
 		</div>
 		<div class="waring" v-if="step === 2">
-			 <mu-checkbox label="" v-model:value="agreeAgreement" class="demo-checkbox agree-check"/> <span class="waring-msg">同意<router-link class="waring-link" to="/">《用户协议》</router-link></span>
+			 <mu-checkbox label="" v-model:value="agreeAgreement" class="demo-checkbox agree-check"/> <span class="waring-msg">同意<span class="waring-link" @click="agreeDialog = true">《用户协议》</span></span>
 		</div>
 		<button v-if="step === 1" class="next" @click="next">下一步</button>
-		<button v-if="step === 2" class="next" @click="regist">立即注册</button>
+		<button v-if="step === 2" class="next" @click="formSubmit(form, rules)">立即注册</button>
 		<router-link class="to-login"  to="/app">已有账号，立即登录</router-link>
 		<span class="market-waring">
 			<svg class="iconfont download-icon"  aria-hidden="true">
 			    <use xlink:href="#icon-sm-ok"></use>
 			</svg>
-			市场有风险，投资需谨慎</span>
+			市场有风险，投资需谨慎
+		</span>
+		<mu-dialog :open="agreeDialog" @close="agreeDialog = false" title="余惠宝注册服务协议"  :scrollable="false" >
+			<div style="width: 100%;height: 10rem;overflow: auto;">
+				<Agreement/>
+			</div>
+		</mu-dialog>
+		
 	</div>
 </template>
 
 <script>
-import {checkPhone, checkPwd} from '@/tool/regx'
+import {checkNotNull, checkPhone, checkInvitorPhone, checkPwd, validate, resultMerge} from '@/tool/regx'
+import {notice} from '@/tool/talk'
+import Agreement from '@/components/pure/regist/Agreement'
+
 export default {
 	data () {
 		return {
@@ -44,117 +58,87 @@ export default {
 		  		'min-height': document.documentElement.clientHeight + 'px'
 		    },
 			logoHidden: false,
-			step: 1,
 			pwpType: 'password',
 			pwdOpen: false,
-			invitorOpen: false,
+			invitorOpen: true,
 			invitorHide: false,
+			agreeDialog: false,
 			agreeAgreement: false,
 			form: {
 				phone: {
 					value: '',
 					errorText: '',
-					valid: false
+					bool: false
 				},
 				valiCode: {
 					value: '',
 					errorText: '',
-					valid: false
+					bool: false
 				},
 				password: {
 					value: '',
 					errorText: '',
-					valid: false
+					bool: false
 				},
 				invitor: {
 					value: '',
 					errorText: '',
-					valid: true
+					bool: true
 				}
 			},
 			rules: {
-				phone (obj) {
-					if (obj.value === '') {
-						obj.valid = false
-						obj.errorText = '手机号码不能为空'
-						return false
-					} else if (!checkPhone(obj.value)) {
-						obj.valid = false
-						obj.errorText = '手机号码格式不正确'
-						return false
-					} else {
-						obj.valid = true
-						obj.errorText = ''
-						return true
-					}
-				},
-				valiCode (obj) {
-					if (obj.value === '') {
-						obj.valid = false
-						obj.errorText = '验证码不能为空'
-						return false
-					} else {
-						obj.valid = true
-						obj.errorText = ''
-						return true
-					}
-				},
-				password (obj) {
-					if (obj.value === '') {
-						obj.valid = false
-						obj.errorText = '密码不能为空'
-						return false
-					} else if (!checkPwd(obj.value)) {
-						obj.valid = false
-						obj.errorText = '密码为6~18位数字字母组合'
-						return false
-					} else {
-						obj.valid = true
-						obj.errorText = ''
-						return true
-					}
-				},
-				invitor (obj) {
-					if (obj.value === '') {
-						obj.valid = true
-						obj.errorText = ''
-						return true
-					} else if (!checkPwd(obj.value)) {
-						obj.valid = false
-						obj.errorText = '手机号码格式不正确'
-						return false
-					} else {
-						obj.valid = true
-						obj.errorText = ''
-						return true
-					}
-				}
+				phone: [
+					{ check: checkNotNull, message: '电话号码不能为空' },
+					{ check: checkPhone, message: '电话号码格式不正确' },
+				],
+				valiCode: [
+					{ check: checkNotNull, message: '验证码不能为空' },
+				],
+				password: [
+					{ check: checkNotNull, message: '密码不能为空' },
+					{ check: checkPwd, message: '密码为6~18位数字字母组合' },
+				],
+				invitor: [
+					{ check: checkInvitorPhone, message: '邀请人手机号格式不正确' },
+				]
 			},
 		}
 	},
+	computed: {
+		text () {
+			return this.$store.state.regist.text
+		},
+		step () {
+			return this.$store.state.regist.step
+		},
+		gifts () {
+			return this.$store.state.regist.gifts
+		}
+	},
 	methods: {
-		phoneChange () {
-			return this.rules.phone(this.form.phone)
+		vali (form, rules, field) {
+			  validate(form, rules, field) 
 		},
-		valiCodeChange () {
-			return this.rules.valiCode(this.form.valiCode)
-		},
-		passwordChange () {
-			return this.rules.password(this.form.password)
-		},
-		invitorChange () {
-			return this.rules.invitor(this.form.invitor)
-		},
-		next () {
-			if (this.form.phone.valid) {
-				this.step = 2
-			} else{
-				this.rules.phone(this.form.phone)
+		async formSubmit (form, rules) {
+			if (await resultMerge(form, rules)) {
+				let obj = {
+					phone: this.form.phone.value,
+					code: this.form.valiCode.value,
+					password: this.form.password.value,
+					invitor: this.form.invitor.value,
+					type: 'H5'
+				}
+				if (this.agreeAgreement) {
+					this.$store.dispatch('registSubmit', obj)
+				} else{
+					notice('请仔细阅读并同意注册协议')
+				}
+				
 			}
 		},
-		regist () {
-			if (this.rules.valiCode(this.form.valiCode) && this.rules.password(this.form.password) && (this.form.invitor.valid || this.rules.invitor(this.form.invitor))) {
-				alert('注册成功')
+		async next () {
+			if (this.form.phone.bool || await validate(this.form, this.rules, 'phone') ) {
+				this.$store.dispatch('registSendCode',{phone: this.form.phone.value})
 			}
 		},
 		pwdOpenChange () {
@@ -163,18 +147,34 @@ export default {
 		}
 	},
 	mounted () {
+		this.$store.dispatch('registInit', 1)
+		this.$store.dispatch('registGifts')
 		let invitor = this.$route.params.invitor
-		if (!!invitor) {
+		if (!!invitor && checkInvitorPhone(invitor)) {
 			this.form.invitor.value = invitor
 			this.form.invitor.valid = true
 			this.invitorHide = true
 		}
+	},
+	components: {
+		Agreement
 	}
 }
 </script>
 
+<style type="text/css">
+	.regist-item-input{
+		text-align: center;
+	}
+	.regist-item-tips{
+		text-align: center;
+		width: 100%;
+	}
+</style>
 <style scoped="scoped" lang="less">
 @import url('../../config/base.less');
+
+
 .agree-check{
 	transform: scale(.7);
 }
@@ -203,8 +203,8 @@ export default {
 	position: absolute;
 	right: .2rem;
 	top: .3rem;
-	width: .4rem;
-	height: .27rem;
+	width: 0.533333rem;
+	height: 0.4rem;
 	background-image: url(../../assets/icon/eye-close.png);
 	background-size: contain;
 	background-repeat: no-repeat;
@@ -247,7 +247,8 @@ export default {
 .to-login{
 	display: block;
 	text-align: center;
-	margin-top: .3rem;
+	margin-top: .8rem;
+	font-size: 0.373333rem;
 }
 .next{
 	width: 80%;
@@ -267,6 +268,8 @@ export default {
 }
 .regist-item{
 	width: 100%;
+	text-align: center;
+	font-size: 0.533333rem;
 }
 .form-one{
 	margin-top: 20px;

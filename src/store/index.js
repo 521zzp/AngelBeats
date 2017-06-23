@@ -4,6 +4,7 @@ import 'babel-polyfill'
 import {actions} from './actions'
 import {mutations} from './mutations'
 /*import login from './modules/login'*/
+import regist from './modules/regist'
 
 
 Vue.use(Vuex)
@@ -56,6 +57,7 @@ const store = new Vuex.Store({
 	mutations,
 	actions,
 	modules: {
+		regist
 	}
 })
 
