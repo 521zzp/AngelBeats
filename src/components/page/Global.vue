@@ -175,6 +175,7 @@ export default {
 	text-align: center;
 	pointer-events: none;
 	top: 30%;
+	z-index: 30141230;
 }
 .notice{
 	display: inline-block;

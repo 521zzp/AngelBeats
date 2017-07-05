@@ -8,6 +8,11 @@ const Regist = resolve => {
     resolve(require('@/components/page/Regist.vue'))
   })
 }
+const RegistGift = resolve => {
+  require.ensure(['@/components/page/RegistGift.vue'], () => {
+    resolve(require('@/components/page/RegistGift.vue'))
+  })
+}
 const AppDownload = resolve => {
   require.ensure(['@/components/page/AppDownload.vue'], () => {
     resolve(require('@/components/page/AppDownload.vue'))
@@ -36,15 +41,14 @@ export default new Router({
       component: Regist
     },
     {
+      path: '/registGift',
+      name: 'registGift',
+      component: RegistGift
+    },
+    {
       path: '/app',
       name: 'appDownload',
       component: AppDownload
     },
-    {
-      path: '/form',
-      name: 'Form',
-      component: Form
-    },
-    
   ]
 })
