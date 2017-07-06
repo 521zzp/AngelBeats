@@ -1,0 +1,50 @@
+1.验证图形验证码 post
+发送：
+{
+	picCode： '212',
+	timeStamp: '521455545' //时间戳
+}
+返回：
+{
+	result: true/false
+}
+
+2.发送手机验证码 post
+发送：
+{
+	phone： '' //手机号码
+}
+返回： 
+{
+	result: true/false,
+	msg: '', //描述
+}
+
+
+3.验证手机号码 post
+发送：
+{
+	phone: '', //手机号码
+	code: '' //验证码
+}
+返回： 
+{
+	result: true/false
+}
+
+4.注册  post
+发送：
+{
+	phone: '', //手机号码
+	code: '', //手机验证码
+	password: '', //密码
+	name: '', //用户姓名
+	idCard: '', //身份证号
+	invitor: '', //邀请码
+	type: 'H5', //注册端口
+}
+返回
+{
+	result: true/false,
+	msg: ''
+}

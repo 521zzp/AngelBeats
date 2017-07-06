@@ -1,5 +1,5 @@
 import * as types from '../mutation-types'
-import {REGIST_SUBMIT, REGIST_CODE, REGIST_GIFTS } from '@/config/url'
+import {REGIST_SUBMIT, REGIST_CODE, REGIST_GIFTS, REGIST_PHONE_CODE_VALI } from '@/config/url'
 import {postModelTwo, getModel, analy} from '@/tool/net'
 import {feedback} from '@/tool/talk'
 import store from '@/store'
@@ -11,23 +11,23 @@ const state = {
 	clock: null,
 	gifts: [],
 	origin: 0, //0表示直接注册页面发生验证码的，1表示从新手礼包领取过来
-	phone: '' //手机号码临时存储
-	
+	phone: '', //手机号码临时存储
+	picCodeFlag: false, //是否开启验证码
+	timeStamp: '', //图形验证码时间戳
 }
 
 const actions = {
-	registSendCode ({commit},obj){
+	async registSendCode ({commit},obj){
 		if (state.sendAbel) {
 			state.sendAbel = false
 			fetch(REGIST_CODE, postModelTwo(obj)).then(analy)
 				.then((datas)=>{
-					if (datas.result){
-						feedback('ok', datas.msg)
+					if (datas.code === 200){
+						feedback('ok', datas.message)
 						if (state.origin === 1) {
 							state.phone = obj.phone
 							router.push('/regist')
 						}
-						commit('REGIST_STEP', 2)
 						let time = 60
 						state.text = time + 's后重新发送'
 						state.clock = setInterval(function () {
@@ -40,7 +40,7 @@ const actions = {
 							}
 						},1000)
 					}else{
-						feedback('waring', datas.msg)
+						feedback('waring', datas.message)
 						clearInterval(state.clock)
 						state.text = '发送验证码'
 						state.sendAbel = true
@@ -58,11 +58,11 @@ const actions = {
   	registSubmit ({commit}, obj) {
   		fetch(REGIST_SUBMIT, postModelTwo(obj)).then(analy).then(
   			(datas) => {
-  				if(datas.result){
-  					feedback('ok', datas.msg)
+  				if(datas.code === 200){
+  					feedback('ok', datas.message)
   					router.push('/app')
   				} else {
-  					feedback('error', datas.msg)
+  					feedback('error', datas.message)
   				}
   			}
   		).catch(function(error){
@@ -80,6 +80,34 @@ const actions = {
   	},
   	registOrigin ({commit}, obj) {
   		commit('REGIST_ORIGIN', obj)
+  	},
+  	async registPicCodeFlag ({commit}, obj) {
+  		var falg = await fetch(REGIST_PIC_SWITCH, getModel()).then(analy).then(
+	  			(datas) => {
+	  				return data;
+	  			}
+	  		).catch(function(error){
+	  			feedback('error','网络异常')
+	  		})
+	  	if (falg !== undefined) {
+	  		commit('REGIST_PIC_SWITCH', falg)
+	  	}
+  	},
+  	registPicTime ({commit}, obj) {
+  		commit('REGIST_PIC_TIME', obj)
+  	},
+  	registNext({commit}, obj) {
+  		fetch(REGIST_PHONE_CODE_VALI, postModelTwo(obj)).then(analy).then(
+  			(datas) => {
+  				if (datas.code === 200) {
+  					commit('REGIST_INIT', 2)
+  				} else {
+  					feedback('error',datas.message)
+  				}
+  			}
+  		).catch(function(error){
+  			feedback('error','网络异常')
+  		})
   	}
   	
 }
@@ -96,6 +124,12 @@ const mutations = {
     },
     [types.REGIST_ORIGIN] (state,obj) {
 		state.origin = obj;
+    },
+    [types.REGIST_PIC_SWITCH] (state,obj) {
+		state.picCodeFlag = obj;
+    },
+    [types.REGIST_PIC_TIME] (state,obj) {
+		state.timeStamp = obj;
     },
 	
 }

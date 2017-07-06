@@ -17,4 +17,7 @@ export const LOGIN = 'SAGAG'
 //注册
 export const REGIST_SUBMIT = BASEURL + '/app2/h5/H5RegistNew.do' //注册表单提交
 export const REGIST_GIFTS = BASEURL + '/app2/index/newUserGiftNoLoginNew.do' //新手礼包
-export const REGIST_CODE = BASEURL + '/app2/h5/sendIdentifyingCodeNew.do' //注册短信验证码
+export const REGIST_CODE = BASEURL + '/app2/h5/sendIdentifyingCodeNews.do' //注册短信验证码
+export const REGIST_PIC_SWITCH = BASEURL + '/app2/h5/picCodeFlag'  //是否开启图片注册
+export const REGIST_PIC_VALIDATE = BASEURL + '/ASGA' //注册验证图形验证码
+export const REGIST_PHONE_CODE_VALI = BASEURL + '/gasgasg' //验证手机验证码

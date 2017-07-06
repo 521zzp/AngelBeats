@@ -1,3 +1,4 @@
+
 /*
  * 封装表单验证方法，支持异步验证
  */
@@ -40,6 +41,8 @@ export const  validate = async ( form, rules, field) => {
 		return true
 	}
 }
+
+
 
 
 /*

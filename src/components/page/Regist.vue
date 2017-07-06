@@ -3,33 +3,40 @@
 		<img :class="{hidden: logoHidden}" class="logo" src="../../assets/icon/spa-logo.png"/>
 		<span class="gift" v-for="item in gifts">注册即送<span class="value">{{item.value}}</span>{{item.type}}</span>
 		<div v-if="step === 1" class="regist-form form-one">
-			<mu-text-field hintText="手机号码" v-model="form.phone.value" type="number" :maxLength="11" @input="vali(form, rules, 'phone')" class="regist-item" 
-				 inputClass="regist-item-input" hintTextClass="regist-item-tips" :errorText="form.phone.errorText"  />
+			<div class="rigist-item-wrap">
+				<mu-text-field hintText="手机号码" v-model="formOne.phone.value" type="number" :maxLength="11" @input="vali(formOne, rules, 'phone')" class="regist-item" @focus="scrollChange($event)"
+				 inputClass="regist-item-input" hintTextClass="regist-item-tips" :errorText="formOne.phone.errorText"  />
+			</div>
+			<div class="rigist-item-wrap">
+				<mu-text-field hintText="密码" :type="pwpType" v-model="formOne.password.value" class="regist-item" @input="vali(formOne, rules, 'password')"  @focus="scrollChange($event)"
+					hintTextClass="regist-item-tips" inputClass="regist-item-input" :errorText="formOne.password.errorText"  />
+				<div class="eye" :class="{'eye-open': pwdOpen}" @click="pwdOpenChange"></div>
+			</div>
+			<div class="rigist-item-wrap" v-if="picNeed">
+				<mu-text-field hintText="图形验证码" v-model="formOne.picCode.value" type="number" class="regist-item" @input="vali(formOne, rules, 'picCode')"  @focus="scrollChange($event)"
+					hintTextClass="regist-item-tips" inputClass="regist-item-input" :errorText="formOne.picCode.errorText"  />
+				<img class="img-Vali" :src="imgCodeSrc" @click="imgRefresh" alt="点击更新" title="点击更新" />
+			</div>
+			<div class="rigist-item-wrap">
+				<mu-text-field hintText="手机验证码" v-model="formOne.valiCode.value" type="number" class="regist-item" @input="vali(formOne, rules, 'valiCode')"  @focus="scrollChange($event)"
+					hintTextClass="regist-item-tips" inputClass="regist-item-input" :errorText="formOne.valiCode.errorText"  />
+				<span class="send-valid" @click="sendCode">{{text}}</span>
+			</div>
 		</div>
 		<div v-if="step === 2" class="regist-form form-two">
 				<div class="rigist-item-wrap">
-					<mu-text-field hintText="真实姓名" type="text" v-model="form.name.value" class="regist-item" @input="vali(form, rules, 'name')" @focus="scrollChange($event)"
-						hintTextClass="regist-item-tips" inputClass="regist-item-input" :errorText="form.name.errorText"  />
-					<div v-show="form.name.value.length > 0" class="input-clear"  @click="form.name.value = ''"></div>
+					<mu-text-field hintText="真实姓名" type="text" v-model="formTwo.name.value" class="regist-item" @input="vali(formTwo, rules, 'name')" @focus="scrollChange($event)"
+						hintTextClass="regist-item-tips" inputClass="regist-item-input" :errorText="formTwo.name.errorText"  />
+					<div v-show="formTwo.name.value.length > 0" class="input-clear"  @click="formTwo.name.value = ''"></div>
 				</div>
 				<div class="rigist-item-wrap">
-					<mu-text-field hintText="身份证号" type="text" v-model="form.idCard.value" class="regist-item" @input="vali(form, rules, 'idCard')"  @focus="scrollChange($event)"
-						hintTextClass="regist-item-tips" inputClass="regist-item-input" :errorText="form.idCard.errorText"  />
-					<div v-show="form.idCard.value.length > 0" class="input-clear"  @click="form.idCard.value = ''"></div>
-				</div>
-				<div class="rigist-item-wrap">
-					<mu-text-field hintText="密码" :type="pwpType" v-model="form.password.value" class="regist-item" @input="vali(form, rules, 'password')"  @focus="scrollChange($event)"
-						hintTextClass="regist-item-tips" inputClass="regist-item-input" :errorText="form.password.errorText"  />
-					<div class="eye" :class="{'eye-open': pwdOpen}" @click="pwdOpenChange"></div>
-				</div>
-				<div class="rigist-item-wrap">
-					<mu-text-field hintText="验证码" v-model="form.valiCode.value" type="number" class="regist-item" @input="vali(form, rules, 'valiCode')"  @focus="scrollChange($event)"
-						hintTextClass="regist-item-tips" inputClass="regist-item-input" :errorText="form.valiCode.errorText"  />
-					<span class="send-valid" @click="next">{{text}}</span>
+					<mu-text-field hintText="身份证号" type="text" v-model="formTwo.idCard.value" class="regist-item" @input="vali(formTwo, rules, 'idCard')"  @focus="scrollChange($event)"
+						hintTextClass="regist-item-tips" inputClass="regist-item-input" :errorText="formTwo.idCard.errorText"  />
+					<div v-show="formTwo.idCard.value.length > 0" class="input-clear"  @click="formTwo.idCard.value = ''"></div>
 				</div>
 				<div class="rigist-item-wrap" :class="{hidden: invitorHide}">
-					<mu-text-field v-if="invitorOpen" hintText="推荐人" type="number" v-model="form.invitor.value" class="regist-item"  @input="vali(form, rules, 'invitor')"
-						hintTextClass="regist-item-tips" inputClass="regist-item-input" :errorText="form.invitor.errorText"  />
+					<mu-text-field v-if="invitorOpen" hintText="推荐人" type="number" v-model="formTwo.invitor.value" class="regist-item"  @input="vali(formTwo, rules, 'invitor')"
+						hintTextClass="regist-item-tips" inputClass="regist-item-input" :errorText="formTwo.invitor.errorText"  />
 					<svg class="iconfont invitor-arrow" :class="{open: invitorOpen}" aria-hidden="true" @click="invitorOpen = !invitorOpen">
 					    <use xlink:href="#icon-back"></use>
 					</svg>
@@ -38,8 +45,8 @@
 		<div class="waring" v-if="step === 2">
 			 <mu-checkbox label="" v-model:value="agreeAgreement" class="demo-checkbox agree-check"/> <span class="waring-msg">同意<span class="waring-link" @click="agreeDialog = true">《用户协议》</span></span>
 		</div>
-		<button v-if="step === 1" class="next" @click="next">下一步</button>
-		<button v-if="step === 2" class="next" @click="formSubmit(form, rules)">立即注册</button>
+		<button v-if="step === 1" class="next" @click="next(formOne, rules)">下一步</button>
+		<button v-if="step === 2" class="next" @click="formSubmit(formTwo, rules)">立即注册</button>
 		<router-link class="to-login"  to="/app">已有账号，立即登录</router-link>
 		<span class="market-waring">
 			<svg class="iconfont download-icon"  aria-hidden="true">
@@ -59,19 +66,41 @@
 <script>
 import {checkNotNull, checkPhone, checkInvitorPhone, checkIdcard, checkPwd, validate, resultMerge} from '@/tool/regx'
 import {notice} from '@/tool/talk'
+import {postModelTwo, analy} from '@/tool/net'
 import Agreement from '@/components/pure/regist/Agreement'
+import {BASEURL, REGIST_PIC_VALIDATE} from '@/config/url'
+import store from '@/store'
 
-	function getTop(e){
-		var offset=e.offsetTop;
-		if(e.offsetParent!=null) offset+=getTop(e.offsetParent);
-		return offset;
+function getTop(e){
+	var offset=e.offsetTop;
+	if(e.offsetParent!=null) offset+=getTop(e.offsetParent);
+	return offset;
+}
+/*
+ * 异步验证验证码是否正确
+ */
+const checkPicCodeAsync = async (value) => {
+	let timeStamp = store.state.regist.timeStamp
+	if (value.length === 4) {
+		try{
+			const datas = await fetch(REGIST_PIC_VALIDATE, postModelTwo({picCode: value, timeStamp: timeStamp})).then(analy)
+			return datas.code === 200
+		}catch(e){
+			return false
+		}
+	} else{
+		return false
 	}
+};
 export default {
 	data () {
+		
 		return {
 			fullHeightStyle: {
 		  		'min-height': document.documentElement.clientHeight + 'px'
 		    },
+		    imgCodeSrc: BASEURL + '/captcha.svl', //图形验证码地址
+		    imgCodeTimeStamp: '',
 			logoHidden: false,
 			pwpType: 'password',
 			pwdOpen: false,
@@ -83,8 +112,13 @@ export default {
 			height: 0,
 			windowHeight: 0,
 			elementHeight: 0,
-			form: {
+			formOne: {
 				phone: {
+					value: '',
+					errorText: '',
+					bool: false
+				},
+				picCode: {
 					value: '',
 					errorText: '',
 					bool: false
@@ -99,6 +133,8 @@ export default {
 					errorText: '',
 					bool: false
 				},
+			},
+			formTwo: {
 				name: {
 					value: '',
 					errorText: '',
@@ -115,7 +151,24 @@ export default {
 					bool: true
 				}
 			},
-			rules: {
+			/*rules:  */
+		}
+	},
+	computed: {
+		text () {
+			return this.$store.state.regist.text
+		},
+		step () {
+			return this.$store.state.regist.step
+		},
+		gifts () {
+			return this.$store.state.regist.gifts
+		},
+		picNeed () {
+			return this.$store.state.regist.picCodeFlag
+		},
+		rules () {
+			return {
 				phone: [
 					{ check: checkNotNull, message: '电话号码不能为空' },
 					{ check: checkPhone, message: '电话号码格式不正确' },
@@ -123,6 +176,10 @@ export default {
 				valiCode: [
 					{ check: checkNotNull, message: '验证码不能为空' },
 				],
+				picCode: this.picNeed ? [
+					{ check: checkNotNull, message: '图形验证码不能为空' },
+					{ check: checkPicCodeAsync, message: '图形验证码不正确' },
+				] : [],
 				name: [
 					{ check: checkNotNull, message: '真实姓名不能为空' },
 				],
@@ -137,18 +194,7 @@ export default {
 				invitor: [
 					{ check: checkInvitorPhone, message: '邀请人手机号格式不正确' },
 				]
-			},
-		}
-	},
-	computed: {
-		text () {
-			return this.$store.state.regist.text
-		},
-		step () {
-			return this.$store.state.regist.step
-		},
-		gifts () {
-			return this.$store.state.regist.gifts
+			}
 		}
 	},
 	methods: {
@@ -158,12 +204,12 @@ export default {
 		async formSubmit (form, rules) {
 			if (await resultMerge(form, rules)) {
 				let obj = {
-					phone: this.form.phone.value,
-					code: this.form.valiCode.value,
-					name: this.form.name.value,
-					idCard: this.form.idCard.value,
-					password: this.form.password.value,
-					invitor: this.form.invitor.value,
+					phone: this.formOne.phone.value,
+					code: this.formOne.valiCode.value,
+					password: this.formOne.password.value,
+					name: this.formTwo.name.value,
+					idCard: this.formTwo.idCard.value,
+					invitor: this.formTwo.invitor.value,
 					type: 'H5'
 				}
 				if (this.agreeAgreement) {
@@ -174,9 +220,27 @@ export default {
 				
 			}
 		},
-		async next () {
-			if (this.form.phone.bool || await validate(this.form, this.rules, 'phone') ) {
+		async next (form, rules) {
+			if (await resultMerge(form, rules)) {
+				this.$store.dispatch('registInit', 2)
+				let obj = {
+					phone : this.formOne.phone.value,
+					code: this.formOne.valiCode.value,
+				}
+				this.$store.dispatch('registNext', obj)
+			}
+			
+			/*if (this.form.phone.bool || await validate(this.form, this.rules, 'phone') ) {
 				this.$store.dispatch('registSendCode',{phone: this.form.phone.value})
+			}*/
+		},
+		async sendCode () {
+			if (this.formOne.phone.bool || await validate(this.formOne, this.rules, 'phone') ) {
+				if (this.formOne.picCode.bool || await validate(this.formOne, this.rules, 'picCode') ) {
+					console.log('this.formOne.picCode.bool ')
+					console.log(this.formOne.picCode.bool )
+					this.$store.dispatch('registSendCode',{phone: this.formOne.phone.value})
+				}
 			}
 		},
 		pwdOpenChange () {
@@ -188,9 +252,15 @@ export default {
 			setTimeout(function () {
 				window.scrollTo(0, elementHeight -document.documentElement.clientHeight / 2 + 10 )
 			}, 500)
-		}
+		},
+		imgRefresh () {
+			let timeStamp = new Date()*1
+			this.$store.dispatch('registPicTime', timeStamp)
+        	this.imgCodeSrc = BASEURL + '/captcha.svl?t=' + timeStamp
+        }
 	},
 	mounted () {
+		this.imgRefresh()
 		let invitor = this.$route.params.invitor
 		if (!!invitor && checkInvitorPhone(invitor)) {
 			this.form.invitor.value = invitor
@@ -278,6 +348,12 @@ export default {
 	top: -.2rem;
 	font-size: 0.5rem;
 	color: rgba(0, 0, 0, 0.38);
+}
+.img-Vali{
+	position: absolute;
+	right: 0;
+	top: 0.25rem;
+	width: 25%;
 }
 .send-valid{
 	position: absolute;
